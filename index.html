@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyExam247 — Notes &amp; Links</title>
+<style>
+  :root{
+    --ink:#1b1d23; --paper:#f6f3ec; --paper-2:#ffffff; --rule:#dcd6c6;
+    --saffron:#d9722c; --saffron-dk:#b8591d; --green:#2f6b4f; --green-dk:#1f4d38;
+    --muted:#73706a; --red:#b3392c;
+    --shadow: 0 1px 0 rgba(0,0,0,0.04), 0 6px 16px rgba(27,29,35,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Iowan Old Style","Georgia","Noto Serif",serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh; padding-bottom:60px;
+    -webkit-user-select:none; user-select:none;
+  }
+  input, textarea{ -webkit-user-select:text; user-select:text; }
+
+  .lockwrap{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .lockcard{
+    width:100%; max-width:380px; background:var(--paper-2);
+    border:1.5px dashed var(--rule); border-radius:16px;
+    padding:32px 26px; box-shadow:var(--shadow); position:relative; text-align:center;
+  }
+  .lockcard::before, .lockcard::after{
+    content:""; position:absolute; width:22px; height:22px; background:var(--paper);
+    border-radius:50%; top:50%; transform:translateY(-50%);
+  }
+  .lockcard::before{ left:-11px; } .lockcard::after{ right:-11px; }
+  .lock-mark{
+    font-family:"Helvetica Neue",Arial,sans-serif; display:inline-block;
+    font-weight:800; font-size:12.5px; letter-spacing:0.14em; color:var(--paper-2);
+    background:var(--green-dk); padding:5px 10px; border-radius:4px; margin-bottom:14px;
+  }
+  .lock-emoji{ font-size:34px; margin-bottom:6px; }
+  .lockcard h2{ margin:0 0 6px; font-size:19px; }
+  .lockcard p{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted); margin:0 0 20px; line-height:1.5; }
+  .lock-input{
+    width:100%; font-family:"Helvetica Neue",Arial,sans-serif; font-size:15px; font-weight:600;
+    text-align:center; padding:13px 14px; border:1.5px solid var(--rule); border-radius:10px;
+    background:var(--paper); color:var(--ink); outline:none; margin-bottom:12px;
+  }
+  .lock-input:focus{ border-color:var(--saffron); }
+  .lock-input.shake{ animation: shake .32s; border-color:var(--red); }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+  .lock-btn{
+    width:100%; font-family:"Helvetica Neue",Arial,sans-serif; font-size:14.5px; font-weight:700;
+    border:none; border-radius:10px; padding:13px 14px; background:var(--green-dk); color:#fff; cursor:pointer;
+  }
+  .lock-err{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--red); font-weight:700; margin-top:12px; min-height:16px; }
+  .lock-hint{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:11px; color:var(--muted); margin-top:16px; }
+
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:linear-gradient(180deg, rgba(255,179,0,0.97), rgba(255,179,0,0.88));
+    backdrop-filter: blur(6px); border-bottom:1px solid var(--rule); padding:14px 18px 12px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:10px; max-width:880px; margin:0 auto; }
+  .brand .mark{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-weight:800; font-size:13px; letter-spacing:0.14em;
+    color:var(--paper-2); background:var(--green-dk); padding:4px 8px; border-radius:4px;
+  }
+  .brand h1{ font-size:19px; margin:0; font-weight:700; }
+  .brand .tag{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:11.5px; color:var(--muted); margin-left:auto; white-space:nowrap; }
+
+  .wrap{ max-width:880px; margin:0 auto; padding:22px 16px 0; }
+
+  .unlockbadge{
+    font-family:"Helvetica Neue",Arial,sans-serif; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:linear-gradient(135deg, #fff8ec, #fdf1de); border:1.5px solid var(--saffron);
+    border-radius:10px; padding:12px 16px; margin-bottom:14px;
+  }
+  .unlockbadge .ub-text{ font-size:13.5px; font-weight:700; color:var(--saffron-dk); }
+  .unlockbadge .ub-text small{ display:block; font-weight:500; color:var(--muted); font-size:11px; margin-top:2px; }
+
+  .warnbanner{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; font-weight:700;
+    background:#fdece9; border:1px solid var(--red); color:var(--red);
+    border-radius:9px; padding:10px 14px; margin-bottom:20px; text-align:center; line-height:1.5;
+  }
+
+  .section-block{ margin-bottom:26px; }
+  .section-head{ display:flex; align-items:center; gap:10px; margin:18px 0 10px; }
+  .section-head .eyebrow{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:11.5px; font-weight:800; letter-spacing:0.12em;
+    color:var(--saffron-dk); text-transform:uppercase;
+  }
+  .section-head::after{ content:""; flex:1; height:1px; background:var(--rule); }
+
+  .subject-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:10px; }
+  .subject-card{
+    background:var(--paper-2); border:1px solid var(--rule); border-radius:10px;
+    padding:12px 12px 12px 14px; display:flex; align-items:center; gap:10px; box-shadow:var(--shadow);
+  }
+  .subject-card.all-card{ background:linear-gradient(135deg, #fff8ec, #fdf1de); border:1.5px solid var(--saffron); }
+  .subject-card.all-card .sname{ color:var(--saffron-dk); }
+  .subject-card.active-view{ border-color:var(--green); }
+  .subject-info{ flex:1; min-width:0; }
+  .subject-info .sname{ font-weight:700; font-size:15.5px; line-height:1.25; }
+  .subject-info .smeta{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:11px; color:var(--muted); margin-top:2px; }
+  .viewbtn{
+    flex:0 0 auto; font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; font-weight:700;
+    border:1px solid var(--green-dk); color:#fff; background:var(--green-dk);
+    padding:8px 14px; border-radius:7px; cursor:pointer; white-space:nowrap;
+  }
+  .viewbtn.active{ background:var(--saffron); border-color:var(--saffron); }
+
+  .viewerwrap{ margin-top:8px; }
+  .viewer-head{
+    font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; font-weight:700;
+    color:var(--green-dk); margin-bottom:8px;
+  }
+  .viewer-frame-holder{
+    border:1.5px solid var(--rule); border-radius:12px; overflow:hidden; background:var(--paper-2);
+    position:relative;
+  }
+  .viewer-frame-holder iframe{ width:100%; height:520px; border:0; display:block; }
+  .viewer-placeholder{
+    font-family:"Helvetica Neue",Arial,sans-serif; color:var(--muted); font-size:13px;
+    text-align:center; padding:60px 20px;
+  }
+
+  .empty{ font-family:"Helvetica Neue",Arial,sans-serif; color:var(--muted); font-size:13.5px; padding:30px 4px; text-align:center; }
+
+  .blockoverlay{
+    position:fixed; inset:0; background:rgba(27,29,35,0.92); z-index:100;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .blockoverlay.show{ display:flex; }
+  .blockcard{
+    background:#fff; border-radius:16px; padding:34px 28px; max-width:360px; text-align:center;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  .blockcard .bi{ font-size:38px; margin-bottom:10px; }
+  .blockcard h3{ margin:0 0 8px; font-family:"Iowan Old Style","Georgia",serif; font-size:18px; color:var(--red); }
+  .blockcard p{ font-size:13px; color:var(--muted); line-height:1.6; margin:0 0 18px; }
+  .blockcard button{
+    border:none; border-radius:9px; padding:11px 20px; background:var(--ink); color:#fff;
+    font-weight:700; font-size:13.5px; cursor:pointer;
+  }
+
+  @media (max-width:480px){
+    .brand h1{ font-size:16.5px; } .brand .tag{ display:none; }
+    .subject-grid{ grid-template-columns:1fr; }
+    .viewer-frame-holder iframe{ height:420px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lockwrap" id="lockwrap">
+  <div class="lockcard">
+    <div class="lock-mark">ME247</div>
+    <div class="lock-emoji">🔒</div>
+    <h2>Access Code Chahiye</h2>
+    <p>Aapko diya gaya access code niche daalein.<br>Yeh code 30–60 minute tak valid rahega.</p>
+    <input type="text" id="passInput" class="lock-input" placeholder="Enter access code" autocomplete="off" spellcheck="false">
+    <button class="lock-btn" id="unlockBtn">Unlock</button>
+    <div class="lock-err" id="lockErr"></div>
+    <div class="lock-hint">Code nahi mila ya expire ho gaya? Apne teacher / MyExam247 se naya code lein.</div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">ME247</span>
+      <h1>MyExam247</h1>
+      <span class="tag">Bihar Board · Notes &amp; MCQs</span>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="unlockbadge" id="unlockBadge">
+      <div class="ub-text" id="ubText"></div>
+    </div>
+    <div class="warnbanner">⚠️ Downloading, screenshotting ya screen-recording is content is not allowed. Bina payment ke download / redistribute karna policy violation hai.</div>
+    <div id="content"></div>
+
+    <div class="viewerwrap">
+      <div class="viewer-head" id="viewerHead">👆 Kisi bhi subject ka "View" button dabao — folder yahin niche khulega.</div>
+      <div class="viewer-frame-holder" id="viewerHolder">
+        <div class="viewer-placeholder">Koi folder select nahi kiya gaya.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="blockoverlay" id="blockOverlay">
+  <div class="blockcard">
+    <div class="bi">🚫</div>
+    <h3>Download Blocked</h3>
+    <p>Bina payment ke is content ko download/save/print karna allowed nahi hai. Security ke liye aapko dobara access code enter karna hoga.</p>
+    <button id="blockRelockBtn">Access code dobara daalein</button>
+  </div>
+</div>
+
+<script>
+// ===== Content links =====
+const DATA = {
+  "Class 10": {
+    "Theory": {
+      "__ALL__": "https://drive.google.com/drive/folders/16LYoEBNtaEPcDHAZqd3mKyd0BeKY585M?usp=sharing",
+      "Science": "https://drive.google.com/drive/folders/12r72nUC5ZkZQ0z5pZ4kaNtUgRaK0-UtA?usp=sharing",
+      "Mathematics": "https://drive.google.com/drive/folders/1kRcLIJMqX8ivToJ45cp0elUhjwv36Exl?usp=sharing",
+      "Social Science (SST)": "https://drive.google.com/drive/folders/1TSwvqqGGbwAzxt_K3ujHKNTudIpWwYg9?usp=sharing",
+      "Sanskrit": "https://drive.google.com/drive/folders/1bkgYy43-OtJywvlGZbZ2fJ4BWiLJ6A1m?usp=sharing"
+    },
+    "Objective (MCQ)": {
+      "__ALL__": "https://drive.google.com/drive/folders/1M5Yrbycuj4k9ttiACrc-OERa5lanCP_X?usp=sharing",
+      "Science": "https://drive.google.com/drive/folders/1wyPNEkUWPJPtjaFPQ9e0Z0d3vy_9MtBG?usp=sharing",
+      "Mathematics": "https://drive.google.com/drive/folders/1oEcN-n-mJe34p74SSF2YQ5YkPGvtkFbx?usp=sharing",
+      "Hindi": "https://drive.google.com/drive/folders/13TOkYufrvwH_eRHhXmYKsG230d77Cbjp?usp=sharing",
+      "English": "https://drive.google.com/drive/folders/1e9LqRnRHJIcM5BbGQQ_He00WSXN1pmdm?usp=sharing",
+      "SST": "https://drive.google.com/drive/folders/1_Jbs3Mef4XqPyLZEk86dtNRacc_nqmFx?usp=sharing",
+      "Sanskrit": "https://drive.google.com/drive/folders/1a8F650FQa5uddZw6AwQfnXSmROyzgbOu?usp=sharing"
+    }
+  },
+  "Class 11": {
+    "Theory": {
+      "__ALL__": "https://drive.google.com/drive/folders/1Av2QIXDuzG4YMmKxONulPx8P8k_fjtNL?usp=sharing",
+      "Physics": "https://drive.google.com/drive/folders/1GImC00P_MirU4ycJkb6FAMTbOFeToQ6N?usp=sharing",
+      "Chemistry": "https://drive.google.com/drive/folders/1xEbz3sNqJrtQsEKKhmtKNKdrw5tgd4zp?usp=sharing",
+      "Mathematics": "https://drive.google.com/drive/folders/1UfF6FC7cb1WqAnpBlsbtTVnrcEthnp5-?usp=drive_link",
+      "Biology": "https://drive.google.com/drive/folders/1Ev4Wgtt7MSbmmYHcvZCxH733snqVAtDd?usp=sharing",
+      "Hindi": "", "English": ""
+    },
+    "Objective (MCQ)": {
+      "__ALL__": "https://drive.google.com/drive/folders/1i3cne4XWGPPped6xY4a4JGAX2lSmG0Vi?usp=sharing",
+      "Physics": "https://drive.google.com/drive/folders/1nx0ttsBT2v2WiFpRxyVupIyHj0teTRYE?usp=sharing",
+      "Chemistry": "https://drive.google.com/drive/folders/1AN6z9qc9qFuM0v6rIQtkfXc-LCMLHqhU?usp=sharing",
+      "Mathematics": "",
+      "Biology": "https://drive.google.com/drive/folders/1Nqjb91GxFoGuLrzPSFFm7ldciyDKcypy?usp=sharing",
+      "Hindi": "", "English": ""
+    }
+  },
+  "Class 12": {
+    "Theory": {
+      "__ALL__": "https://drive.google.com/drive/folders/19i5Hdm2bnMNxwxU0zSbL2x4nMPCJsSjE?usp=sharing",
+      "Physics": "https://drive.google.com/drive/folders/1WAc4UwUNjPvo4supz99LMJX5Lxaqs4xW?usp=sharing",
+      "Chemistry": "https://drive.google.com/drive/folders/1Dvud61o82LoI85SH8KPqDKbHtYWYU5hl?usp=sharing",
+      "Mathematics": "https://drive.google.com/drive/folders/1gc4xTDiYa8Pb-gDQD3MaM6pW_QsBiicw?usp=sharing",
+      "Biology": "https://drive.google.com/drive/folders/1lzcxBhkNJe70cJDm-ddYbW7Nw6Hcy9VB?usp=sharing",
+      "Hindi": "https://drive.google.com/drive/folders/16EeQ8XaYYe-7B6SLT8mKSLaMSBT3tREk?usp=sharing",
+      "English": "https://drive.google.com/drive/folders/11olhSviQoyqGEuEEOOcFnbKpCVZkxPZH?usp=sharing"
+    },
+    "Objective (MCQ)": {
+      "__ALL__": "https://drive.google.com/drive/folders/1P_F7MKihwD0Y7EylMKoRktusMvcYfHJT?usp=sharing",
+      "Physics": "https://drive.google.com/drive/folders/1GpqWvbTKjxJcqjKVRXiCpFgzj1PG47Cu?usp=sharing",
+      "Chemistry": "https://drive.google.com/drive/folders/1vi8IEvdV3V0I9V5QTMe54h7YxHd9cWBT?usp=sharing",
+      "Mathematics": "https://drive.google.com/drive/folders/1LursBU2iv8gJI9am6WCgMICEA-i792E-?usp=sharing",
+      "Biology": "https://drive.google.com/drive/folders/1v0n8SgmwUEaIIq_uBR1Z_d7pFCD2YeH-?usp=sharing",
+      "Hindi": "https://drive.google.com/drive/folders/1Oo3Ja_ScSy6d_YMTw1DzwiH3sBPltBRc?usp=sharing",
+      "English": "https://drive.google.com/drive/folders/1FEHPkD3l11-DIGzxW3Relw9VxhrLEVRp?usp=sharing"
+    }
+  }
+};
+const SECTION_ORDER = { "Class 10": ["Theory","Objective (MCQ)"], "Class 11": ["Theory","Objective (MCQ)"], "Class 12": ["Theory","Objective (MCQ)"] };
+
+// ===== Rotating password system — must match owner-panel.html exactly =====
+const SHARED_SECRET = "ME247-Raj-Secret-Key-2026#Bihar";
+const WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+
+const CLASS_CODES = { "Class 10":"C10", "Class 11":"C11", "Class 12":"C12" };
+const SUBJECT_CODES = {
+  "Class 10": [
+    {code:"Sci", subj:"Science"}, {code:"Math", subj:"Mathematics"}, {code:"Eng", subj:"English"},
+    {code:"Hin", subj:"Hindi"}, {code:"SST", subj:"SST"}, {code:"San", subj:"Sanskrit"}, {code:"Complete", subj:"ALL"}
+  ],
+  "Class 11": [
+    {code:"Phy", subj:"Physics"}, {code:"Chem", subj:"Chemistry"}, {code:"Bio", subj:"Biology"},
+    {code:"Math", subj:"Mathematics"}, {code:"Eng", subj:"English"}, {code:"Hin", subj:"Hindi"}, {code:"Complete", subj:"ALL"}
+  ],
+  "Class 12": [
+    {code:"Phy", subj:"Physics"}, {code:"Chem", subj:"Chemistry"}, {code:"Bio", subj:"Biology"},
+    {code:"Math", subj:"Mathematics"}, {code:"Eng", subj:"English"}, {code:"Hin", subj:"Hindi"}, {code:"Complete", subj:"ALL"}
+  ]
+};
+
+async function sha256Hex(message){
+  const enc = new TextEncoder().encode(message);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+function currentWindow(){ return Math.floor(Date.now() / WINDOW_MS); }
+async function generatePassword(clsCode, subjCode, win){
+  const hex = await sha256Hex(`${SHARED_SECRET}|${clsCode}|${subjCode}|${win}`);
+  const p1 = hex.slice(0,4).toUpperCase(), p2 = hex.slice(4,8).toUpperCase(), p3 = hex.slice(8,10).toUpperCase();
+  return `${clsCode}$${subjCode}#${p1}@${p2}!${p3}`;
+}
+
+async function findMatch(entered){
+  const win = currentWindow();
+  const candidates = [];
+  Object.keys(CLASS_CODES).forEach(cls => {
+    SUBJECT_CODES[cls].forEach(s => {
+      // check current window AND previous window (grace period => ~30-60 min total validity)
+      candidates.push({ cls, subj:s.subj, clsCode:CLASS_CODES[cls], subjCode:s.code, win });
+      candidates.push({ cls, subj:s.subj, clsCode:CLASS_CODES[cls], subjCode:s.code, win: win-1 });
+    });
+  });
+  const results = await Promise.all(candidates.map(async c => ({
+    ...c, pw: await generatePassword(c.clsCode, c.subjCode, c.win)
+  })));
+  const hit = results.find(r => r.pw === entered);
+  return hit ? { cls: hit.cls, subject: hit.subj } : null;
+}
+
+function ordinal(cls){ const n = cls.replace("Class ", "").trim(); return `Class ${n}th`; }
+function subjectMatches(key, query){
+  const nk = key.toLowerCase(), nq = query.toLowerCase();
+  if(nk === nq) return true;
+  if(nq === 'sst' && nk.includes('sst')) return true;
+  if(nk === 'sst' && nq.includes('sst')) return true;
+  return false;
+}
+function toEmbedUrl(driveUrl){
+  const m = driveUrl.match(/folders\/([a-zA-Z0-9_-]+)/);
+  if(!m) return driveUrl;
+  return `https://drive.google.com/embeddedfolderview?id=${m[1]}#list`;
+}
+
+function loadInViewer(label, url){
+  document.getElementById('viewerHead').textContent = `📂 ${label}`;
+  const holder = document.getElementById('viewerHolder');
+  holder.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.src = toEmbedUrl(url);
+  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
+  holder.appendChild(iframe);
+  document.querySelectorAll('.viewbtn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active-view'));
+  holder.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function renderUnlocked(match){
+  const content = document.getElementById('content');
+  const ubText = document.getElementById('ubText');
+  content.innerHTML = '';
+  const classData = DATA[match.cls];
+  if(!classData){ content.innerHTML = '<div class="empty">Content not found.</div>'; return; }
+
+  const isAll = match.subject === "ALL";
+  ubText.innerHTML = isAll
+    ? `🎟️ Unlocked: <b>${ordinal(match.cls)} — Complete Access</b><small>Sabhi subjects, Theory + Objective (MCQ)</small>`
+    : `🎟️ Unlocked: <b>${ordinal(match.cls)} — ${match.subject}</b><small>Theory + Objective (MCQ)</small>`;
+
+  const sections = SECTION_ORDER[match.cls] || Object.keys(classData);
+  let renderedAny = false;
+
+  sections.forEach(sec => {
+    const subjects = classData[sec];
+    if(!subjects) return;
+    let subjectKeys = isAll
+      ? Object.keys(subjects).filter(s => subjects[s] && subjects[s].trim() !== '')
+      : Object.keys(subjects).filter(s => s !== "__ALL__" && subjects[s] && subjects[s].trim() !== '' && subjectMatches(s, match.subject));
+    if(subjectKeys.length === 0) return;
+    subjectKeys.sort((a,b) => { if(a==="__ALL__") return -1; if(b==="__ALL__") return 1; return a.localeCompare(b); });
+    renderedAny = true;
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    const head = document.createElement('div');
+    head.className = 'section-head';
+    head.innerHTML = `<span class="eyebrow">${sec}</span>`;
+    block.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'subject-grid';
+
+    subjectKeys.forEach(subj => {
+      const url = subjects[subj];
+      const isAllCard = subj === "__ALL__";
+      const displayName = isAllCard ? "📦 All Subjects" : subj;
+      const label = `${ordinal(match.cls)} · ${sec} · ${displayName}`;
+
+      const card = document.createElement('div');
+      card.className = 'subject-card' + (isAllCard ? ' all-card' : '');
+
+      const info = document.createElement('div');
+      info.className = 'subject-info';
+      info.innerHTML = `<div class="sname">${displayName}</div><div class="smeta">${ordinal(match.cls)} · ${sec}</div>`;
+
+      const viewBtn = document.createElement('button');
+      viewBtn.className = 'viewbtn';
+      viewBtn.textContent = 'View';
+      viewBtn.onclick = () => {
+        loadInViewer(label, url);
+        viewBtn.classList.add('active');
+        card.classList.add('active-view');
+      };
+
+      card.appendChild(info);
+      card.appendChild(viewBtn);
+      grid.appendChild(card);
+    });
+
+    block.appendChild(grid);
+    content.appendChild(block);
+  });
+
+  if(!renderedAny){ content.innerHTML = '<div class="empty">Is subject ka material abhi upload nahi hua.</div>'; }
+}
+
+function relockPage(){
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('lockwrap').style.display = 'flex';
+  document.getElementById('passInput').value = '';
+  document.getElementById('lockErr').textContent = '';
+  document.getElementById('viewerHolder').innerHTML = '<div class="viewer-placeholder">Koi folder select nahi kiya gaya.</div>';
+  document.getElementById('viewerHead').textContent = '👆 Kisi bhi subject ka "View" button dabao — folder yahin niche khulega.';
+  document.getElementById('blockOverlay').classList.remove('show');
+  try{ sessionStorage.removeItem('me247_code'); }catch(e){}
+}
+
+function showBlockWarning(){
+  document.getElementById('blockOverlay').classList.add('show');
+}
+
+async function tryUnlock(){
+  const input = document.getElementById('passInput');
+  const err = document.getElementById('lockErr');
+  const btn = document.getElementById('unlockBtn');
+  const code = input.value.trim();
+  btn.textContent = 'Checking...';
+  const match = await findMatch(code);
+  btn.textContent = 'Unlock';
+  if(match){
+    document.getElementById('lockwrap').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderUnlocked(match);
+    try{ sessionStorage.setItem('me247_code', code); }catch(e){}
+  } else {
+    err.textContent = 'Galat ya expire ho chuka access code. Naya code lein.';
+    input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+  }
+}
+
+document.getElementById('unlockBtn').onclick = tryUnlock;
+document.getElementById('passInput').addEventListener('keydown', (e) => { if(e.key === 'Enter') tryUnlock(); });
+document.getElementById('blockRelockBtn').onclick = relockPage;
+
+// ===== Soft anti-download deterrents (parent page only — cannot reach inside the Drive iframe) =====
+document.addEventListener('contextmenu', (e) => {
+  if(e.target.closest('.viewer-frame-holder') || e.target.closest('.subject-card')){
+    e.preventDefault(); showBlockWarning();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  const k = e.key ? e.key.toLowerCase() : '';
+  if((e.ctrlKey || e.metaKey) && (k === 's' || k === 'p')){
+    e.preventDefault(); showBlockWarning();
+  }
+});
+
+// auto-unlock if already unlocked this session
+(async function(){
+  try{
+    const saved = sessionStorage.getItem('me247_code');
+    if(saved){
+      const match = await findMatch(saved);
+      if(match){
+        document.getElementById('lockwrap').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        renderUnlocked(match);
+      }
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>
